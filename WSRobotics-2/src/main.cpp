@@ -1,37 +1,27 @@
 #include <Arduino.h>
-#include <PRIZM.h>     // include PRIZM library
-PRIZM prizm;           // instantiate a PRIZM object “prizm” so we can use its functions
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+RF24 radio(9, 10); // CE, CSN
+const byte address[6] = "satan";
+String sub1;
+int payload[3];
 
-
-//-------easy actions----------
-void OpenClaw(){
-  prizm.setServoPosition(2,170);
+void setup() {
+  Serial.begin(9600);
+  radio.begin();
+  radio.openReadingPipe(0, address);
+  radio.setPALevel(RF24_PA_MIN);
+  radio.startListening();
 }
 
-void CloseClaw(){
-  prizm.setServoPosition(2,10);
-}
-
-void ArmUp(){
-  prizm.setServoPosition(1, 10);
-}
-
-void ArmDown(){
-  prizm.setServoPosition(1, 170);
-}
-
-
-//------end easy actions-------
-
-
-void setup() { 
-  prizm.prizmBegin();         // initialize the PRIZM controller
-  prizm.setServoSpeed(2,50);
-  //prizm.setServoPosition(2,0);
-  // prizm.setMotorInvert(2,1);      // invert the direction of DC Motor 1
-}
 
 void loop() {
-  
-}
+  if (radio.available()) {
+    int count = 1000;
+    radio.read(&payload, sizeof(payload));
+    Serial.println(String(payload[0]) + " " + String(payload[1]) + " " + String(payload[2]));
+    ////text.subString()
 
+  }
+}
