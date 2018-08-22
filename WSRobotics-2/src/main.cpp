@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <Wire.h>
 RF24 radio(9, 10); // CE, CSN
 const byte address[6] = "satan";
 String sub1;
@@ -19,7 +20,7 @@ void setup() {
 
 void loop() {
   if (radio.available()) {
-    int count = 1000;
+    //int count = 1000;
     radio.read(&payload, sizeof(payload));
     Serial.println(String(payload[0]) + " " + String(payload[1]) + " " + String(payload[2]));
     ////text.subString()
